@@ -811,6 +811,8 @@ spec:
               fieldPath: metadata.name
         - name: OPERATOR_NAME
           value: percona-xtradb-cluster-operator
+        - name: MAX_CONCURRENT_RECONCILES
+          value: "20"
         image: percona/percona-xtradb-cluster-operator:1.10.0
         imagePullPolicy: Always
         resources:
