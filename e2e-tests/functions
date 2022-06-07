@@ -11,7 +11,7 @@ IMAGE_PROXY=${IMAGE_PROXY:-"perconalab/percona-xtradb-cluster-operator:main-prox
 IMAGE_HAPROXY=${IMAGE_HAPROXY:-"perconalab/percona-xtradb-cluster-operator:main-haproxy"}
 IMAGE_BACKUP=${IMAGE_BACKUP:-"perconalab/percona-xtradb-cluster-operator:main-pxc8.0-backup"}
 IMAGE_LOGCOLLECTOR=${IMAGE_LOGCOLLECTOR:-"perconalab/percona-xtradb-cluster-operator:main-logcollector"}
-SKIP_BACKUPS_TO_AWS_GCP=${SKIP_BACKUPS_TO_AWS_GCP:-1}
+SKIP_BACKUPS_TO_AWS_GCP_AZURE=${SKIP_BACKUPS_TO_AWS_GCP_AZURE:-1}
 PMM_SERVER_VER=$(curl https://raw.githubusercontent.com/Percona-Lab/percona-openshift/main/helm/pmm-server/Chart.yaml | awk '/^version/{print $NF}')
 IMAGE_PMM_SERVER_REPO="perconalab/pmm-server"
 IMAGE_PMM_SERVER_TAG="dev-latest"
@@ -36,7 +36,7 @@ if [[ ${ENABLE_LOGGING} == "true" ]]; then
 fi
 
 if [ -f "$conf_dir/cloud-secret.yml" ]; then
-	SKIP_BACKUPS_TO_AWS_GCP=''
+	SKIP_BACKUPS_TO_AWS_GCP_AZURE=''
 fi
 
 if oc get projects; then
@@ -727,7 +727,7 @@ cat_config() {
 }
 
 apply_secrets() {
-	if [ -z "$SKIP_BACKUPS_TO_AWS_GCP" ]; then
+	if [ -z "$SKIP_BACKUPS_TO_AWS_GCP_AZURE" ]; then
 		kubectl_bin apply \
 			-f $conf_dir/minio-secret.yml \
 			-f $conf_dir/cloud-secret.yml
@@ -738,7 +738,7 @@ apply_secrets() {
 }
 
 apply_config() {
-	if [ -z "$SKIP_BACKUPS_TO_AWS_GCP" ]; then
+	if [ -z "$SKIP_BACKUPS_TO_AWS_GCP_AZURE" ]; then
 		cat_config "$1" \
 			| kubectl_bin apply -f -
 	else
